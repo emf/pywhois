@@ -91,13 +91,16 @@ class NICClient(object) :
         return nhost
         
     def whois(self, query, hostname, flags):
+		from time import time, sleep
         """Perform initial lookup with TLD whois server
         then, if the quick flag is false, search that result 
         for the region-specifc whois server and do a lookup
         there for contact details
         """
         #pdb.set_trace()
+        begin = time()
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setblocking(0)
         s.connect((hostname, 43))
         if (hostname == NICClient.GERMNICHOST):
             s.send("-T dn,ace -C US-ASCII " + query + "\r\n")
@@ -105,10 +108,21 @@ class NICClient(object) :
             s.send(query + "\r\n")
         response = ''
         while True:
-            d = s.recv(4096)
-            response += d
-            if not d:
-                break
+			if response and time()-begin>2:
+			    # minimum wait period, once we've gotten some data.
+			    break
+			elif time()-begin>240:
+			    # maximum time reached, give up.
+			    break
+			try:
+				d = s.recv(4096)
+				if d:
+					response += d
+					begin = time()
+				else:
+				    sleep(0.1)
+			except:
+				pass
         s.close()
         #pdb.set_trace()
         nhost = None
