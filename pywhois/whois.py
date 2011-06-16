@@ -100,8 +100,8 @@ class NICClient(object) :
 		#pdb.set_trace()
 		begin = time()
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.setblocking(0)
 		s.connect((hostname, 43))
+		s.setblocking(0)
 		if (hostname == NICClient.GERMNICHOST):
 			s.send("-T dn,ace -C US-ASCII " + query + "\r\n")
 		else:
