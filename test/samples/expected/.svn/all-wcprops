@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/6/trunk/test/samples/expected
+END
+urlowl.com
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/6/trunk/test/samples/expected/urlowl.com
+END
+microsoft.com
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/6/trunk/test/samples/expected/microsoft.com
+END
+digg.com
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/6/trunk/test/samples/expected/digg.com
+END
+imdb.com
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/6/trunk/test/samples/expected/imdb.com
+END
+reddit.com
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/6/trunk/test/samples/expected/reddit.com
+END
+google.com
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/6/trunk/test/samples/expected/google.com
+END
