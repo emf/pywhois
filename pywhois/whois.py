@@ -168,6 +168,8 @@ class NICClient(object) :
         elif (self.use_qnichost):
             nichost = self.choose_server(query_arg)
             if (nichost != None):
+                if (nichost == 'com' + NICClient.QNICHOST_TAIL) or (nichost == 'net' + NICClient.QNICHOST_TAIL):
+                    query_arg = '=' + query_arg
                 result = self.whois(query_arg, nichost, flags)           
         else:
             result = self.whois(query_arg, options['whoishost'], flags)
