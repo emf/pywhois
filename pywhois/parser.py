@@ -102,6 +102,8 @@ class WhoisEntry(object):
         	return WhoisMe(domain, text)
         elif   '.uk' == domain[-3:]:
         	return WhoisUk(domain, text)
+        elif   '.il' == domain[-3:]:
+        	return WhoisIl(domain, text)
         else:
             return WhoisEntry(domain, text)
 
@@ -340,6 +342,24 @@ class WhoisUk(WhoisEntry):
 	}
     def __init__(self, domain, text):
         if 'Not found:' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisIl(WhoisEntry):
+    """Whois parser for .il domains
+    """
+    regex = {
+        'domain_name': 'domain:\s*(.+)',
+        'registrar': 'registrar name:\s*(.+)',
+        'expiration_date': 'validity:\s*(.+)',
+        'name_servers': 'nserver:\s*(.+)',  # list of name servers
+        'status': 'status:\s*(.+)',  # list of statuses
+        'emails': '[\w.-]+ AT [\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No entries found':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
