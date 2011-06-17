@@ -86,21 +86,21 @@ class WhoisEntry(object):
         if text.strip() == 'No whois server is known for this kind of object.':
             raise PywhoisError(text)
 
-        if '.com' in domain:
+        if    '.com' == domain[-4:]:
             return WhoisCom(domain, text)
-        elif '.net' in domain:
+        elif  '.net' == domain[-4:]:
             return WhoisNet(domain, text)
-        elif '.org' in domain:
+        elif  '.org' == domain[-4:]:
             return WhoisOrg(domain, text)
-        elif '.ru' in domain:
+        elif   '.ru' == domain[-3:]:
             return WhoisRu(domain, text)
-        elif '.name' in domain:
+        elif '.name' == domain[-5:]:
         	return WhoisName(domain, text)
-        elif '.us' in domain:
+        elif   '.us' == domain[-3:]:
         	return WhoisUs(domain, text)
-        elif '.me' in domain:
+        elif   '.me' == domain[-3:]:
         	return WhoisMe(domain, text)
-        elif '.uk' in domain:
+        elif   '.uk' == domain[-3:]:
         	return WhoisUk(domain, text)
         else:
             return WhoisEntry(domain, text)
