@@ -104,6 +104,8 @@ class NICClient(object) :
 		s.setblocking(0)
 		if (hostname == NICClient.GERMNICHOST):
 			s.send("-T dn,ace -C US-ASCII " + query + "\r\n")
+		elif (hostname == 'com' + NICClient.QNICHOST_TAIL) or (hostname == 'net' + NICClient.QNICHOST_TAIL):
+			s.send('=' + query + "\r\n")
 		else:
 			s.send(query + "\r\n")
 		response = ''
@@ -155,9 +157,8 @@ class NICClient(object) :
         # this would be the case when this function is called by other then main
         if (options == None):                     
             options = {}
-     
-        if ( (not options.has_key('whoishost') or options['whoishost'] == None)
-            and (not options.has_key('country') or options['country'] == None)):
+
+        if ( (not options.has_key('whoishost') or options['whoishost'] == None) and (not options.has_key('country') or options['country'] == None) ):
             self.use_qnichost = True
             options['whoishost'] = NICClient.NICHOST
             if ( not (flags & NICClient.WHOIS_QUICK)):
@@ -168,9 +169,7 @@ class NICClient(object) :
         elif (self.use_qnichost):
             nichost = self.choose_server(query_arg)
             if (nichost != None):
-                if (nichost == 'com' + NICClient.QNICHOST_TAIL) or (nichost == 'net' + NICClient.QNICHOST_TAIL):
-                    query_arg = '=' + query_arg
-                result = self.whois(query_arg, nichost, flags)           
+                result = self.whois(query_arg, nichost, flags)
         else:
             result = self.whois(query_arg, options['whoishost'], flags)
             
