@@ -21,6 +21,7 @@ def cast_date(date_str):
         '%d-%b-%Y %H:%M:%S %Z',		# 24-Jul-2009 13:20:03 UTC
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
         '%Y-%m-%dT%H:%M:%SZ',       # 2007-01-26T19:10:31Z
+        '%Y%m%d'					# 20020702 (isoc.org.il)
     ]
 
     for format in known_formats:
@@ -350,12 +351,13 @@ class WhoisIl(WhoisEntry):
     """Whois parser for .il domains
     """
     regex = {
-        'domain_name': 'domain:\s*(.+)',
-        'registrar': 'registrar name:\s*(.+)',
-        'expiration_date': 'validity:\s*(.+)',
-        'name_servers': 'nserver:\s*(.+)',  # list of name servers
-        'status': 'status:\s*(.+)',  # list of statuses
-        'emails': '[\w.-]+ AT [\w.-]+\.[\w]{2,4}',  # list of email addresses
+        'creation_date':    'changed:.*\.il (.+) \(Assigned\)',
+        'domain_name':      'domain:\s*(.+)',
+        'registrar':        'registrar name:\s*(.+)',
+        'expiration_date':  'validity:\s*(.+)',
+        'name_servers':     'nserver:\s*(.+)',  # list of name servers
+        'status':           'status:\s*(.+)',  # list of statuses
+        'emails':           '[\w.-]+ AT [\w.-]+\.[\w]{2,4}',  # list of email addresses
     }
 
     def __init__(self, domain, text):
