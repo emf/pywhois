@@ -97,6 +97,8 @@ class WhoisEntry(object):
             return WhoisOrg(domain, text)
         elif   '.il' == domain[-3:]:
             return WhoisIl(domain, text)
+        elif '.info' == domain[-5:]:
+            return WhoisInfo(domain, text)
         elif   '.me' == domain[-3:]:
         	return WhoisMe(domain, text)
         elif '.name' == domain[-5:]:
@@ -184,6 +186,9 @@ class WhoisOrg(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisInfo(WhoisOrg):
+    pass
 
 class WhoisRu(WhoisEntry):
     """Whois parser for .ru domains
