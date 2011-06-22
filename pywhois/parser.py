@@ -23,7 +23,8 @@ def cast_date(date_str):
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
         '%Y-%m-%dT%H:%M:%SZ',       # 2007-01-26T19:10:31Z
         '%Y%m%d%H%M%S',             # 20110209194637 (.ua)
-        '%Y%m%d'					# 20020702 (isoc.org.il)
+        '%Y%m%d',					# 20020702 (isoc.org.il)
+        '%d/%m/%Y'                  # 13/09/2004 (.fr)
     ]
 
     for format in known_formats:
@@ -95,6 +96,8 @@ class WhoisEntry(object):
             return WhoisNet(domain, text)
         elif  '.org' == domain[-4:]:
             return WhoisOrg(domain, text)
+        elif   '.fr' == domain[-3:]:
+            return WhoisFr(domain, text)
         elif   '.il' == domain[-3:]:
             return WhoisIl(domain, text)
         elif '.info' == domain[-5:]:
@@ -187,7 +190,28 @@ class WhoisOrg(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+class WhoisFr(WhoisEntry):
+    """Whois parser for .ua domains (ukraine)"""
+    regex = {
+        'domain_name':     'domain:\s*(.+)',
+        'registrar_id':    'source:\s*(.+)',
+        'registrar':       'registrar:\s*(.+)',
+        'admin_id':        'admin-c:\s*(.+)',
+        'technical_id':    'tech-c:\s*(.+)',
+        'creation_date':   'created:\s*(.+)',
+        'updated_date':    'last-update:\s*(.+)',
+        'name_servers':    'nserver:\s*(.+)',  # list of name servers
+        'status':          'status:\s*(.+)',  # list of statuses
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+    def __init__(self, domain, text):
+        if 'No entries found' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 class WhoisInfo(WhoisOrg):
+    """identical to WhoisOrg"""
     pass
 
 class WhoisRu(WhoisEntry):
