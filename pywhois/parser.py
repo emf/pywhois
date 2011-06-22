@@ -136,6 +136,9 @@ class WhoisOrg(WhoisEntry):
     """
     regex = {
         'domain_name':                    'Domain Name:\s*(.+)',
+        'creation_date':                  'Created On:\s*(.+)',
+        'expiration_date':                'Expiration Date:\s*(.+)',
+        'updated_date':                   'Last Updated On:\s*(.+)',
         'domain_id':                      'Domain ID:\s*(.+)',
         'registrar':                      'Sponsoring Registrar:\s*(.+)',
         'status':                         'Status:\s*(.+)',  # list of statuses
@@ -174,15 +177,12 @@ class WhoisOrg(WhoisEntry):
         'tech_phone_number':              'Tech Phone Number:\s*(.+)',
         'tech_email':                     'Tech Email:\s*(.+)',
         'name_servers':                   'Name Server:\s*(.+)',  # list of name servers
-        'creation_date':                  'Created On:\s*(.+)',
-        'expiration_date':                'Expiration Date:\s*(.+)',
-        'updated_date':                   'Last Updated On:\s*(.+)',
 	}
     def __init__(self, domain, text):
         if text.strip() == 'NOT FOUND':
             raise PywhoisError(text)
         else:
-            WhoisEntry.__init__(self, domain, text) 
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisRu(WhoisEntry):
     """Whois parser for .ru domains
