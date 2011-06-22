@@ -93,18 +93,18 @@ class WhoisEntry(object):
             return WhoisNet(domain, text)
         elif  '.org' == domain[-4:]:
             return WhoisOrg(domain, text)
-        elif   '.ru' == domain[-3:]:
-            return WhoisRu(domain, text)
-        elif '.name' == domain[-5:]:
-        	return WhoisName(domain, text)
-        elif   '.us' == domain[-3:]:
-        	return WhoisUs(domain, text)
+        elif   '.il' == domain[-3:]:
+            return WhoisIl(domain, text)
         elif   '.me' == domain[-3:]:
         	return WhoisMe(domain, text)
+        elif '.name' == domain[-5:]:
+            return WhoisName(domain, text)
+        elif   '.ru' == domain[-3:]:
+            return WhoisRu(domain, text)
         elif   '.uk' == domain[-3:]:
         	return WhoisUk(domain, text)
-        elif   '.il' == domain[-3:]:
-        	return WhoisIl(domain, text)
+        elif   '.us' == domain[-3:]:
+            return WhoisUs(domain, text)
         else:
             return WhoisEntry(domain, text)
 
