@@ -18,6 +18,7 @@ def cast_date(date_str):
     known_formats = [
         '%d-%b-%Y', 				# 02-jan-2000
         '%Y-%m-%d', 				# 2000-01-02
+        '%Y.%m.%d',                 # 2002.12.25 (.ru)
         '%d-%b-%Y %H:%M:%S %Z',		# 24-Jul-2009 13:20:03 UTC
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
         '%Y-%m-%dT%H:%M:%SZ',       # 2007-01-26T19:10:31Z
