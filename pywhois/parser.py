@@ -21,7 +21,7 @@ def cast_date(date_str):
         '%d-%b-%Y %H:%M:%S %Z',		# 24-Jul-2009 13:20:03 UTC
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
         '%Y-%m-%dT%H:%M:%SZ',       # 2007-01-26T19:10:31Z
-        '%Y%m%d%H%M%S',             # 2011 02 09 19 46 37 (.ua)
+        '%Y%m%d%H%M%S',             # 20110209194637 (.ua)
         '%Y%m%d'					# 20020702 (isoc.org.il)
     ]
 
@@ -134,6 +134,50 @@ class WhoisNet(WhoisEntry):
 class WhoisOrg(WhoisEntry):
     """Whois parser for .org domains
     """
+    regex = {
+        'domain_name':                    'Domain Name:\s*(.+)',
+        'domain_id':                      'Domain ID:\s*(.+)',
+        'registrar':                      'Sponsoring Registrar:\s*(.+)',
+        'status':                         'Status:\s*(.+)',  # list of statuses
+        'registrant_id':                  'Registrant ID:\s*(.+)',
+        'registrant_organization':        'Registrant Organization:\s*(.+)',
+        'registrant_name':                'Registrant Name:\s*(.+)',
+        'registrant_address1':            'Registrant Street1:\s*(.+)',
+        'registrant_address2':            'Registrant Street2:\s*(.+)',
+        'registrant_city':                'Registrant City:\s*(.+)',
+        'registrant_state_province':      'Registrant State/Province:\s*(.+)',
+        'registrant_postal_code':         'Registrant Postal Code:\s*(.+)',
+        'registrant_country':             'Registrant Country:\s*(.+)',
+        'registrant_phone_number':        'Registrant Phone:\s*(.+)',
+        'registrant_email':               'Registrant Email:\s*(.+)',
+        'admin_id':                       'Admin ID:\s*(.+)',
+        'admin_name':                     'Admin Name:\s*(.+)',
+        'admin_organization':             'Admin Organization:\s*(.+)',
+        'admin_address1':                 'Admin Street1:\s*(.+)',
+        'admin_address2':                 'Admin Street2:\s*(.+)',
+        'admin_city':                     'Admin City:\s*(.+)',
+        'admin_state_province':           'Admin State/Province:\s*(.+)',
+        'admin_postal_code':              'Admin Postal Code:\s*(.+)',
+        'admin_country':                  'Admin Country:\s*(.+)',
+        'admin_phone_number':             'Admin Phone:\s*(.+)',
+        'admin_email':                    'Admin Email:\s*(.+)',
+        'tech_id':                        'Tech ID:\s*(.+)',
+        'tech_name':                      'Tech Name:\s*(.+)',
+        'tech_organization':              'Tech Organization:\s*(.+)',
+        'tech_address1':                  'Tech Street1:\s*(.+)',
+        'tech_address2':                  'Tech Street2:\s*(.+)',
+        'tech_city':                      'Tech City:\s*(.+)',
+        'tech_state_province':            'Tech State/Province:\s*(.+)',
+        'tech_postal_code':               'Tech Postal Code:\s*(.+)',
+        'tech_country':                   'Tech Country:\s*(.+)',
+        'tech_country_code':              'Tech Country Code:\s*(.+)',
+        'tech_phone_number':              'Tech Phone Number:\s*(.+)',
+        'tech_email':                     'Tech Email:\s*(.+)',
+        'name_servers':                   'Name Server:\s*(.+)',  # list of name servers
+        'creation_date':                  'Created On:\s*(.+)',
+        'expiration_date':                'Expiration Date:\s*(.+)',
+        'updated_date':                   'Last Updated On:\s*(.+)',
+	}
     def __init__(self, domain, text):
         if text.strip() == 'NOT FOUND':
             raise PywhoisError(text)
