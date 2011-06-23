@@ -27,6 +27,7 @@ def cast_date(date_str):
         '%Y-%m-%dT%H:%M:%S',        # 2007-01-26T19:10:31
         '%Y%m%d%H%M%S',             # 20110209194637 (.ua)
         '%Y%m%d',					# 20020702 (isoc.org.il)
+        '%m/%d/%Y',                 # 05/14/2002
         '%d/%m/%Y',                 # 13/09/2004 (.fr)
         '%Y/%m/%d'                  # 2004/10/14 (.jp)
     ]
@@ -124,6 +125,8 @@ class WhoisEntry(object):
             return WhoisNo(domain, text)
         elif   '.pl' == domain[-3:]:
             return WhoisPl(domain, text)
+        elif   '.tk' == domain[-3:]:
+            return WhoisTk(domain, text)
         elif   '.tw' == domain[-3:]:
             return WhoisTw(domain, text)
         elif   '.ru' == domain[-3:]:
@@ -367,6 +370,25 @@ class WhoisRu(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip() == 'No entries found':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisTk(WhoisEntry):
+    """Whois parser for .tk domain"""
+    regex = {
+        'domain_name': 'Domain name:\r?\n\s*(.+)',
+        'registrant_name': 'Organisation:\r?\n\s*(.+)',
+        'registrar':    'Record maintained by:\s*(.+)',
+        'creation_date': 'Domain registered:\s*(.+)',
+        'expiration_date': 'Record will expire on (.+)',
+        'name_servers': 'Domain Nameservers:\r?\n\s*(.+)',  # list of name servers
+        'status': '(Your selected domain name [\r\n\w\s\d]+)',
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'Invalid query or domain name not known in Dot TK Domain Registry':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
