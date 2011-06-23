@@ -107,6 +107,8 @@ class WhoisEntry(object):
             return WhoisBiz(domain, text)
         elif   '.cn' == domain[-3:]:
             return WhoisCn(domain, text)
+        elif   '.co' == domain[-3:]:
+            return WhoisCo(domain, text)
         elif   '.de' == domain[-3:]:
             return WhoisDe(domain, text)
         elif   '.dk' == domain[-3:]:
@@ -313,6 +315,10 @@ class WhoisCn(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisCo(WhoisBiz):
+    """whois parser for .co, identical to .biz"""
+    pass
 
 class WhoisDe(WhoisEntry):
     """Whois parser for .de domains (germany)"""
