@@ -103,6 +103,8 @@ class WhoisEntry(object):
             return WhoisOrg(domain, text)
         elif   '.au' == domain[-3:]:
             return WhoisAu(domain, text)
+        elif  '.biz' == domain[-4:]:
+            return WhoisBiz(domain, text)
         elif   '.cn' == domain[-3:]:
             return WhoisCn(domain, text)
         elif   '.de' == domain[-3:]:
@@ -229,6 +231,64 @@ class WhoisAu(WhoisEntry):
     }
     def __init__(self, domain, text):
         if text.strip() == 'No Data Found':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisBiz(WhoisEntry):
+    """Whois parser for .biz domains.  really. .biz?  i hate the internet."""
+    regex = {
+        'domain_name':                    'Domain Name:\s*(.+)',
+        'creation_date':                  'Domain Registration Date:\s*(.+)',
+        'expiration_date':                'Domain Expiration Date:\s*(.+)',
+        'updated_date':                   'Domain Last Updated Date:\s*(.+)',
+        'domain_id':                      'Domain ID:\s*(.+)',
+        'registrar':                      'Sponsoring Registrar:\s*(.+)',
+        'status':                         'Domain Status:\s*(.+)',  # list of statuses
+        'registrant_id':                  'Registrant ID:\s*(.+)',
+        'registrant_name':                'Registrant Name:\s*(.+)',
+        'registrant_address1':            'Registrant Address1:\s*(.+)',
+        'registrant_city':                'Registrant City:\s*(.+)',
+        'registrant_state_province':      'Registrant State/Province:\s*(.+)',
+        'registrant_postal_code':         'Registrant Postal Code:\s*(.+)',
+        'registrant_country':             'Registrant Country:\s*(.+)',
+        'registrant_country_code':        'Registrant Country Code:\s*(.+)',
+        'registrant_phone_number':        'Registrant Phone:\s*(.+)',
+        'registrant_email':               'Registrant Email:\s*(.+)',
+        'admin_id':                       'Administrative Contact ID:\s*(.+)',
+        'admin_name':                     'Administrative Contact Name:\s*(.+)',
+        'admin_address1':                 'Administrative Contact Address1:\s*(.+)',
+        'admin_city':                     'Administrative Contact City:\s*(.+)',
+        'admin_state_province':           'Administrative Contact State/Province:\s*(.+)',
+        'admin_postal_code':              'Administrative Contact Postal Code:\s*(.+)',
+        'admin_country':                  'Administrative Contact Country:\s*(.+)',
+        'admin_country_code':             'Administrative Contact Country Code:\s*(.+)',
+        'admin_phone_number':             'Administrative Contact Phone:\s*(.+)',
+        'admin_email':                    'Administrative Contact Email:\s*(.+)',
+        'billing_id':                     'Billing Contact ID:\s*(.+)',
+        'billing_name':                   'Billing Contact Name:\s*(.+)',
+        'billing_address1':               'Billing Contact Address1:\s*(.+)',
+        'billing_city':                   'Billing Contact City:\s*(.+)',
+        'billing_state_province':         'Billing Contact State/Province:\s*(.+)',
+        'billing_postal_code':            'Billing Contact Postal Code:\s*(.+)',
+        'billing_country':                'Billing Contact Country:\s*(.+)',
+        'billing_country_code':           'Billing Contact Country Code:\s*(.+)',
+        'billing_phone_number':           'Billing Contact Phone:\s*(.+)',
+        'billing_email':                  'Billing Contact Email:\s*(.+)',
+        'tech_id':                        'Technical Contact ID:\s*(.+)',
+        'tech_name':                      'Technical Contact Name:\s*(.+)',
+        'tech_address1':                  'Technical Contact Address1:\s*(.+)',
+        'tech_city':                      'Technical Contact City:\s*(.+)',
+        'tech_state_province':            'Technical Contact State/Province:\s*(.+)',
+        'tech_postal_code':               'Technical Contact Postal Code:\s*(.+)',
+        'tech_country':                   'Technical Contact Country:\s*(.+)',
+        'tech_country_code':              'Technical Contact Country Code:\s*(.+)',
+        'tech_phone_number':              'Technical Contact Phone:\s*(.+)',
+        'tech_email':                     'Technical Contact Email:\s*(.+)',
+        'name_servers':                   'Name Server:\s*(.+)',  # list of name servers
+	}
+    def __init__(self, domain, text):
+        if 'Not found:' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
