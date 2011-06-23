@@ -103,6 +103,8 @@ class WhoisEntry(object):
             return WhoisCn(domain, text)
         elif   '.de' == domain[-3:]:
             return WhoisDe(domain, text)
+        elif   '.dk' == domain[-3:]:
+            return WhoisDk(domain, text)
         elif   '.fr' == domain[-3:]:
             return WhoisFr(domain, text)
         elif   '.il' == domain[-3:]:
@@ -236,6 +238,21 @@ class WhoisDe(WhoisEntry):
     }
     def __init__(self, domain, text):
         if 'Status: free' in text or 'Error' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisDk(WhoisEntry):
+    """Whois parser for .dk domains (denmark)"""
+    regex = {
+        'domain_name':     'Domain:\s*(.+)',
+        'creation_date':   'Registered:\s*(.+)',
+        'expiration_date': 'Expires:\s*(.+)',
+        'name_servers':    'Hostname:\s*(.+)',  # list of name servers
+        'status':          'Status:\s*(.+)',  # list of statuses
+    }
+    def __init__(self, domain, text):
+        if 'No entries found' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
