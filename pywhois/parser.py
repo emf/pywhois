@@ -18,6 +18,7 @@ def cast_date(date_str):
     known_formats = [
         '%d-%b-%Y', 				# 02-jan-2000
         '%Y-%m-%d', 				# 2000-01-02
+        '%Y.%m.%d %H:%M:%S',        # 2006.06.12 15:53:14 (.pl)
         '%Y.%m.%d',                 # 2002.12.25 (.ru)
         '%d-%b-%Y %H:%M:%S %Z',		# 24-Jul-2009 13:20:03 UTC
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
@@ -106,6 +107,8 @@ class WhoisEntry(object):
         	return WhoisMe(domain, text)
         elif '.name' == domain[-5:]:
             return WhoisName(domain, text)
+        elif   '.pl' == domain[-3:]:
+            return WhoisPl(domain, text)
         elif   '.ru' == domain[-3:]:
             return WhoisRu(domain, text)
         elif   '.ua' == domain[-3:]:
@@ -213,6 +216,23 @@ class WhoisFr(WhoisEntry):
 class WhoisInfo(WhoisOrg):
     """identical to WhoisOrg"""
     pass
+
+class WhoisPl(WhoisEntry):
+    """Whois parser for .pl domains
+    """
+    regex = {
+        'domain_name': 'DOMAIN NAME:\s*(.+)',
+        'creation_date': 'created:\s*(.+)',
+        'updated_date': 'last modified:\s*(.+)',
+        'name_servers': 'nameservers:\s*(.+)',  # list of name servers
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No information available':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisRu(WhoisEntry):
     """Whois parser for .ru domains
