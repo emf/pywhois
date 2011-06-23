@@ -195,8 +195,24 @@ class WhoisOrg(WhoisEntry):
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
 
+class WhoisDe(WhoisEntry):
+    """Whois parser for .de domains (germany)"""
+    regex = {
+        'domain_name':     'Domain:\s*(.+)',
+        #'creation_date':   'created:\s*(.+)',
+        'updated_date':    'Changed:\s*(.+)',
+        'name_servers':    'Nserver:\s*(.+)',  # list of name servers
+        'status':          'Status:\s*(.+)',  # list of statuses
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+    def __init__(self, domain, text):
+        if 'Status: free' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
 class WhoisFr(WhoisEntry):
-    """Whois parser for .ua domains (ukraine)"""
+    """Whois parser for .fr domains (france)"""
     regex = {
         'domain_name':     'domain:\s*(.+)',
         'registrar_id':    'source:\s*(.+)',
