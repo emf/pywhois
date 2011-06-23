@@ -97,6 +97,8 @@ class WhoisEntry(object):
             return WhoisNet(domain, text)
         elif  '.org' == domain[-4:]:
             return WhoisOrg(domain, text)
+        elif   '.de' == domain[-3:]:
+            return WhoisDe(domain, text)
         elif   '.fr' == domain[-3:]:
             return WhoisFr(domain, text)
         elif   '.il' == domain[-3:]:
