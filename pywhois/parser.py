@@ -101,6 +101,8 @@ class WhoisEntry(object):
             return WhoisNet(domain, text)
         elif  '.org' == domain[-4:]:
             return WhoisOrg(domain, text)
+        elif   '.au' == domain[-3:]:
+            return WhoisAu(domain, text)
         elif   '.cn' == domain[-3:]:
             return WhoisCn(domain, text)
         elif   '.de' == domain[-3:]:
@@ -209,6 +211,24 @@ class WhoisOrg(WhoisEntry):
 	}
     def __init__(self, domain, text):
         if text.strip() == 'NOT FOUND':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisAu(WhoisEntry):
+    """Whois parser for .au domains (throw another domain on the barbie, mate)"""
+    regex = {
+        'domain_name':             'Domain Name:\s*(.+)',
+        'registrar':               'Registrar Name:\s*(.+)',
+        'registrar_id':            'Registrar ID:\s*(.+)',
+        'registrant_name':         'Registrant Name:\s*(.+)',
+        'registrant_id':           'Registrant ID:\s*(.+)',
+        'updated_date':            'Last Modified:\s*(.+)',
+        'name_servers':            'Name Server:\s*(.+)',  # list of name servers
+        'status':                  'Status:\s*(.+)',  # list of statuses
+    }
+    def __init__(self, domain, text):
+        if text.strip() == 'No Data Found':
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
