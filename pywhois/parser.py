@@ -107,6 +107,8 @@ class WhoisEntry(object):
         	return WhoisMe(domain, text)
         elif '.name' == domain[-5:]:
             return WhoisName(domain, text)
+        elif   '.no' == domain[-3:]:
+            return WhoisNo(domain, text)
         elif   '.pl' == domain[-3:]:
             return WhoisPl(domain, text)
         elif   '.ru' == domain[-3:]:
@@ -216,6 +218,22 @@ class WhoisFr(WhoisEntry):
 class WhoisInfo(WhoisOrg):
     """identical to WhoisOrg"""
     pass
+
+class WhoisNo(WhoisEntry):
+    """Whois parser for .no domains
+    """
+    regex = {
+        'domain_name': 'Domain Name\.+:\s*(.+)',
+        'creation_date': 'Created:\s*(.+)',
+        'updated_date': 'Last updated:\s*(.+)',
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No match':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisPl(WhoisEntry):
     """Whois parser for .pl domains
