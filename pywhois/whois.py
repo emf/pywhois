@@ -54,6 +54,7 @@ class NICClient(object) :
     NORIDHOST           = "whois.norid.no"
     IANAHOST            = "whois.iana.org"
     GERMNICHOST         = "de.whois-servers.net"
+    JPNICHOST           = "jp.whois-servers.net"
     DEFAULT_PORT        = "nicname"
     WHOIS_SERVER_ID     = "Whois Server:"
     WHOIS_ORG_SERVER_ID = "Registrant Street1:Whois Server:"
@@ -106,6 +107,8 @@ class NICClient(object) :
 			s.send("-T dn,ace -C US-ASCII " + query + "\r\n")
 		elif (hostname == 'com' + NICClient.QNICHOST_TAIL) or (hostname == 'net' + NICClient.QNICHOST_TAIL):
 			s.send('=' + query + "\r\n")
+		elif (hostname == NICClient.JPNICHOST):
+			s.send(query + "/e\r\n")	# english only makes regexes easier for me
 		else:
 			s.send(query + "\r\n")
 		response = ''

@@ -25,7 +25,8 @@ def cast_date(date_str):
         '%Y-%m-%dT%H:%M:%S',        # 2007-01-26T19:10:31
         '%Y%m%d%H%M%S',             # 20110209194637 (.ua)
         '%Y%m%d',					# 20020702 (isoc.org.il)
-        '%d/%m/%Y'                  # 13/09/2004 (.fr)
+        '%d/%m/%Y',                 # 13/09/2004 (.fr)
+        '%Y/%m/%d'                  # 2004/10/14 (.jp)
     ]
 
     for format in known_formats:
@@ -105,6 +106,8 @@ class WhoisEntry(object):
             return WhoisIl(domain, text)
         elif '.info' == domain[-5:]:
             return WhoisInfo(domain, text)
+        elif   '.jp' == domain[-3:]:
+            return WhoisJp(domain, text)
         elif   '.me' == domain[-3:]:
         	return WhoisMe(domain, text)
         elif '.name' == domain[-5:]:
@@ -238,6 +241,26 @@ class WhoisFr(WhoisEntry):
 class WhoisInfo(WhoisOrg):
     """identical to WhoisOrg"""
     pass
+
+class WhoisJp(WhoisEntry):
+    """Whois parser for .jp domains
+    """
+    regex = {
+        'domain_name': '\[Domain Name\]\s+(.+)',
+        'registrar':   '\[Registrant\]\s+(.+)',
+        'creation_date': '\[(?:Created on|Registered Date)\]\s+(.+)',
+        'updated_date': '\[Last Updated?\]\s+(.+)',
+        'expiration_date': '\[Expires on\]\s+(.+)',
+        'name_servers': '\[Name Server\]\s+(.+)',
+        'status': '\[(?:Status|State)\]\s+(.+)',
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No match':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisNo(WhoisEntry):
     """Whois parser for .no domains
