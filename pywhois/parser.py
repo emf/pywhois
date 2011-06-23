@@ -21,6 +21,7 @@ def cast_date(date_str):
         '%Y.%m.%d %H:%M:%S',        # 2006.06.12 15:53:14 (.pl)
         '%Y.%m.%d',                 # 2002.12.25 (.ru)
         '%d-%b-%Y %H:%M:%S %Z',		# 24-Jul-2009 13:20:03 UTC
+        '%Y-%m-%d %H:%M',           # 2000-03-07 00:00 (.cn)
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
         '%Y-%m-%dT%H:%M:%S',        # 2007-01-26T19:10:31
         '%Y%m%d%H%M%S',             # 20110209194637 (.ua)
@@ -98,6 +99,8 @@ class WhoisEntry(object):
             return WhoisNet(domain, text)
         elif  '.org' == domain[-4:]:
             return WhoisOrg(domain, text)
+        elif   '.cn' == domain[-3:]:
+            return WhoisCn(domain, text)
         elif   '.de' == domain[-3:]:
             return WhoisDe(domain, text)
         elif   '.fr' == domain[-3:]:
@@ -198,6 +201,25 @@ class WhoisOrg(WhoisEntry):
 	}
     def __init__(self, domain, text):
         if text.strip() == 'NOT FOUND':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisCn(WhoisEntry):
+    """Whois parser for .cn domains (china)"""
+    regex = {
+        'domain_name':             'Domain Name:\s*(.+)',
+        'registrar':               'Sponsoring Registrar:\s*(.+)',
+        'registrant_organization': 'Registrant Organization:\s*(.+)',
+        'registrant_name':         'Registrant Name:\s*(.+)',
+        'creation_date':           'Registration Date:\s*(.+)',
+        'expiration_date':         'Expiration Date:\s*(.+)',
+        'name_servers':            'Name Server:\s*(.+)',  # list of name servers
+        'status':                  'Domain Status:\s*(.+)',  # list of statuses
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+    def __init__(self, domain, text):
+        if 'no matching record' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
