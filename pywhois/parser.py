@@ -29,7 +29,8 @@ def cast_date(date_str):
         '%Y%m%d',					# 20020702 (isoc.org.il)
         '%m/%d/%Y',                 # 05/14/2002
         '%d/%m/%Y',                 # 13/09/2004 (.fr)
-        '%Y/%m/%d'                  # 2004/10/14 (.jp)
+        '%Y/%m/%d',                 # 2004/10/14 (.jp)
+        '%Y. %m. %d.'               # 2007. 04. 23. (.kr)
     ]
 
     for format in known_formats:
@@ -123,6 +124,8 @@ class WhoisEntry(object):
             return WhoisInfo(domain, text)
         elif   '.jp' == domain[-3:]:
             return WhoisJp(domain, text)
+        elif   '.kr' == domain[-3:]:
+            return WhoisKr(domain, text)
         elif   '.me' == domain[-3:]:
         	return WhoisMe(domain, text)
         elif '.name' == domain[-5:]:
@@ -401,6 +404,26 @@ class WhoisJp(WhoisEntry):
         'expiration_date': '\[Expires on\]\s+(.+)',
         'name_servers': '\[Name Server\]\s+(.+)',
         'status': '\[(?:Status|State)\]\s+(.+)',
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+
+    def __init__(self, domain, text):
+        if text.strip() == 'No match':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisKr(WhoisEntry):
+    """Whois parser for .kr domains """
+    regex = {
+        'domain_name': 'Domain Name\s*:\s*(.+)',
+        'creation_date': 'Registered Date\s*:\s*(.+)',
+        'updated_date': 'Last updated Date\s*:\s*(.+)',
+        'expiration_date': 'Expiration Date\s*:\s*(.+)',
+        'registrant': 'Authorized Agency\s*:\s*(.+)',
+        'name_servers': 'Name Server\r?\n\s*Host Name\s*:\s*(.+)',
+        'status': 'Publishes\s*:\s*(.+)',
+        'admin_name': 'Administrative Contact\(AC\):(.+)',
         'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
     }
 
