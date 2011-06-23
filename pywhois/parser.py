@@ -20,6 +20,7 @@ def cast_date(date_str):
         '%Y-%m-%d', 				# 2000-01-02
         '%Y.%m.%d %H:%M:%S',        # 2006.06.12 15:53:14 (.pl)
         '%Y.%m.%d',                 # 2002.12.25 (.ru)
+        '%d.%m.%Y',                 # 21.5.1998 (.fi)
         '%d-%b-%Y %H:%M:%S %Z',		# 24-Jul-2009 13:20:03 UTC
         '%Y-%m-%d %H:%M',           # 2000-03-07 00:00 (.cn)
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
@@ -105,6 +106,8 @@ class WhoisEntry(object):
             return WhoisDe(domain, text)
         elif   '.dk' == domain[-3:]:
             return WhoisDk(domain, text)
+        elif   '.fi' == domain[-3:]:
+            return WhoisFi(domain, text)
         elif   '.fr' == domain[-3:]:
             return WhoisFr(domain, text)
         elif   '.il' == domain[-3:]:
@@ -253,6 +256,21 @@ class WhoisDk(WhoisEntry):
     }
     def __init__(self, domain, text):
         if 'No entries found' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisFi(WhoisEntry):
+    """Whois parser for .fi domains (finland)"""
+    regex = {
+        'domain_name':     'domain:\s*(.+)',
+        'creation_date':   'created:\s*(.+)',
+        'expiration_date': 'expires:\s*(.+)',
+        'name_servers':    'nserver:\s*(.+) ',  # list of name servers
+        'status':          'status:\s*(.+)',  # list of statuses
+    }
+    def __init__(self, domain, text):
+        if 'Domain not found' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
