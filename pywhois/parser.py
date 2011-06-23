@@ -528,14 +528,15 @@ class WhoisUk(WhoisEntry):
     """Whois parser for .uk domains
     """
     regex = {
-        'domain_name':                    'Domain name:\n\s*(.+)',
-        'registrar':                      'Registrar:\n\s*(.+)',
-        'registrar_url':                  'URL:\s*(.+)',
-        'status':                         'Registration status:\n\s*(.+)',  # list of statuses
-        'registrant_name':                'Registrant:\n\s*(.+)',
-        'creation_date':                  'Registered on:\s*(.+)',
-        'expiration_date':                'Renewal date:\s*(.+)',
-        'updated_date':                   'Last updated:\s*(.+)',
+        'domain_name':          'Domain name:\r?\n\s*(.+)',
+        'registrar':            'Registrar:\r?\n\s*(.+)',
+        'registrar_url':        'URL:\s*(.+)',
+        'status':               'Registration status:\r?\n\s*(.+)',  # list of statuses
+        'registrant_name':      'Registrant:\r?\n\s*(.+)',
+        'creation_date':        'Registered on:\s*(.+)',
+        'expiration_date':      'Renewal date:\s*(.+)',
+        'updated_date':         'Last updated:\s*(.+)',
+        'name_servers':         'Name servers:\r?\n\s*(.+)',     # at least get one of them.
 	}
     def __init__(self, domain, text):
         if 'Not found:' in text:
