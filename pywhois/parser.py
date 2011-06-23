@@ -208,7 +208,7 @@ class WhoisDe(WhoisEntry):
         'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
     }
     def __init__(self, domain, text):
-        if 'Status: free' in text:
+        if 'Status: free' in text or 'Error' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
