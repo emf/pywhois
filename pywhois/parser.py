@@ -108,6 +108,8 @@ class WhoisEntry(object):
             return WhoisAu(domain, text)
         elif  '.biz' == domain[-4:]:
             return WhoisBiz(domain, text)
+        elif   '.ca' == domain[-3:]:
+            return WhoisCa(domain, text)
         elif   '.cn' == domain[-3:]:
             return WhoisCn(domain, text)
         elif   '.co' == domain[-3:]:
@@ -306,6 +308,20 @@ class WhoisBiz(WhoisEntry):
         if 'Not found:' in text:
             raise PywhoisError(text)
         else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisCa(WhoisEntry):
+    """Whois parser for .ca domains (canada)"""
+    regex = {
+        'domain_name':             'Domain name:\s*(.+)',
+        'creation_date':           'Creation date:\s*(.+)',
+        'updated_date':            'Updated date:\s*(.+)',
+        'expiration_date':         'Expiry Date:\s*(.+)',
+        'name_servers':            'Name servers:\r?\n\s*(.+)',  # list of name servers
+        'status':                  'Domain status:\s*(.+)',  # list of statuses
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+    def __init__(self, domain, text):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisCn(WhoisEntry):
