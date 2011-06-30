@@ -105,7 +105,9 @@ class NICClient(object) :
 		s.setblocking(0)
 		if (hostname == NICClient.GERMNICHOST):
 			s.send("-T dn,ace -C US-ASCII " + query + "\r\n")
-		elif (hostname == 'com' + NICClient.QNICHOST_TAIL) or (hostname == 'net' + NICClient.QNICHOST_TAIL):
+		elif (hostname == 'com' + NICClient.QNICHOST_TAIL) or (hostname == 'net' + NICClient.QNICHOST_TAIL) \
+			or (hostname == 'cc' + NICClient.QNICHOST_TAIL) or (hostname == 'tv' + NICClient.QNICHOST_TAIL) \
+			or (hostname == 'jobs' + NICClient.QNICHOST_TAIL):
 			s.send('=' + query + "\r\n")
 		elif (hostname == NICClient.JPNICHOST):
 			s.send(query + "/e\r\n")	# english only makes regexes easier for me
