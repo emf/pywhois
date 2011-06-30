@@ -20,13 +20,14 @@ def cast_date(date_str):
         '%Y-%m-%d', 				# 2000-01-02
         '%Y.%m.%d %H:%M:%S',        # 2006.06.12 15:53:14 (.pl)
         '%Y.%m.%d',                 # 2002.12.25 (.ru)
+        '%d.%m.%Y %H:%M:%S',        # 18.05.2004 18:15:00 (.cz)
         '%d.%m.%Y',                 # 21.5.1998 (.fi)
-        '%d-%b-%Y %H:%M:%S %Z',		# 24-Jul-2009 13:20:03 UTC
+        '%d-%b-%Y %H:%M:%S %Z',     # 24-Jul-2009 13:20:03 UTC
         '%Y-%m-%d %H:%M',           # 2000-03-07 00:00 (.cn)
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
         '%Y-%m-%dT%H:%M:%S',        # 2007-01-26T19:10:31
         '%Y%m%d%H%M%S',             # 20110209194637 (.ua)
-        '%Y%m%d',					# 20020702 (isoc.org.il)
+        '%Y%m%d',                   # 20020702 (isoc.org.il)
         '%m/%d/%Y',                 # 05/14/2002
         '%d/%m/%Y',                 # 13/09/2004 (.fr)
         '%Y/%m/%d',                 # 2004/10/14 (.jp)
@@ -110,6 +111,8 @@ class WhoisEntry(object):
             return WhoisCn(domain, text)
         elif   '.co' == domain[-3:]:
             return WhoisCo(domain, text)
+        elif   '.cz' == domain[-3:]:
+            return WhoisCz(domain, text)
         elif   '.de' == domain[-3:]:
             return WhoisDe(domain, text)
         elif   '.dk' == domain[-3:]:
@@ -322,6 +325,21 @@ class WhoisCn(WhoisEntry):
 class WhoisCo(WhoisBiz):
     """whois parser for .co, identical to .biz"""
     pass
+
+class WhoisCz(WhoisEntry):
+    """Whois parser for .cz domains """
+    regex = {
+        'domain_name':     'domain:\s*(.+)',
+        'creation_date':   'registered:\s*(.+)',
+        'updated_date':    'changed:\s*(.+)',
+        'expiration_date': 'expire:\s*(.+)',
+        'name_servers':    'nserver:\s*(.+)',  # list of name servers
+    }
+    def __init__(self, domain, text):
+        if 'No entries found' in text:
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisDe(WhoisEntry):
     """Whois parser for .de domains (germany)"""
