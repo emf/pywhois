@@ -20,6 +20,7 @@ def cast_date(date_str):
         '%Y-%m-%d', 				# 2000-01-02
         '%Y.%m.%d %H:%M:%S',        # 2006.06.12 15:53:14 (.pl)
         '%Y.%m.%d',                 # 2002.12.25 (.ru)
+	'%Y-%b-%d',                 # 2008-Feb-5 (.nu)
         '%d.%m.%Y %H:%M:%S',        # 18.05.2004 18:15:00 (.cz)
         '%d.%m.%Y',                 # 21.5.1998 (.fi)
         '%d-%b-%Y %H:%M:%S %Z',     # 24-Jul-2009 13:20:03 UTC
@@ -135,6 +136,8 @@ class WhoisEntry(object):
             return WhoisName(domain, text)
         elif   '.no' == domain[-3:]:
             return WhoisNo(domain, text)
+        elif   '.nu' == domain[-3:]:
+            return WhoisNu(domain, text)
         elif   '.pl' == domain[-3:]:
             return WhoisPl(domain, text)
         elif   '.tk' == domain[-3:]:
@@ -465,6 +468,24 @@ class WhoisNo(WhoisEntry):
 
     def __init__(self, domain, text):
         if text.strip() == 'No match':
+            raise PywhoisError(text)
+        else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisNu(WhoisEntry):
+    """Whois parser for .nu domains """
+    regex = {
+        'domain_name':     'Domain Name.*:\s*(.+)',
+        'creation_date':   'Record created on (.+)\.',
+        'updated_date':    'Record last updated on (.+)\.',
+        'expiration_date': 'Record expires on (.+)\.',
+        'status':          'Record status:\s*(.+)',
+        'name_servers':    'Domain servers in listed order:\r?\n\s*(.+)',
+        'emails':          '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+
+    def __init__(self, domain, text):
+        if 'NO MATCH' in text:
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
