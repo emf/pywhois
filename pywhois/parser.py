@@ -26,6 +26,7 @@ def cast_date(date_str):
         '%d-%b-%Y %H:%M:%S %Z',     # 24-Jul-2009 13:20:03 UTC
         '%Y-%m-%d %H:%M',           # 2000-03-07 00:00 (.cn)
         '%a %b %d %H:%M:%S %Z %Y',  # Tue Jun 21 23:59:59 GMT 2011
+	'%d %b %Y %H:%M %Z',        # 31 Dec 1999 05:00 PST (.fm)
         '%Y-%m-%dT%H:%M:%S',        # 2007-01-26T19:10:31
         '%Y%m%d%H%M%S',             # 20110209194637 (.ua)
         '%Y%m%d',                   # 20020702 (isoc.org.il)
@@ -122,6 +123,8 @@ class WhoisEntry(object):
             return WhoisDk(domain, text)
         elif   '.fi' == domain[-3:]:
             return WhoisFi(domain, text)
+        elif   '.fm' == domain[-3:]:
+            return WhoisFm(domain, text)
         elif   '.fr' == domain[-3:]:
             return WhoisFr(domain, text)
         elif   '.il' == domain[-3:]:
@@ -406,6 +409,21 @@ class WhoisFi(WhoisEntry):
         if 'Domain not found' in text:
             raise PywhoisError(text)
         else:
+            WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisFm(WhoisEntry):
+    """Whois parser for .fm domains"""
+    regex = {
+        'domain_name':     'Query:\s*(.+)',
+        'registrar':       'Registrar Name:\s*(.+)',
+        'creation_date':   'Created:\s*(.+)',
+        'updated_date':    'Modified::\s*(.+)',
+        'expiration_date': 'Expires:\s*(.+)',
+        'name_servers':    'Name Servers:\r?\n\s*(.+) ',
+        'status':          'Status:\s*(.+)',  # list of statuses
+        'emails': '[\w.-]+@[\w.-]+\.[\w]{2,4}',  # list of email addresses
+    }
+    def __init__(self, domain, text):
             WhoisEntry.__init__(self, domain, text, self.regex)
 
 class WhoisFr(WhoisEntry):
