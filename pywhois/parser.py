@@ -145,6 +145,8 @@ class WhoisEntry(object):
             return WhoisRu(domain, text)
         elif   '.sk' == domain[-3:]:
             return WhoisSk(domain, text)
+        elif   '.su' == domain[-3:]:
+            return WhoisSu(domain, text)
         elif   '.ua' == domain[-3:]:
             return WhoisUa(domain, text)
         elif   '.uk' == domain[-3:]:
@@ -519,6 +521,10 @@ class WhoisSk(WhoisEntry):
             raise PywhoisError(text)
         else:
             WhoisEntry.__init__(self, domain, text, self.regex)
+
+class WhoisSu(WhoisRu):
+    """whois parser for .su, identical to .ru"""
+    pass
 
 class WhoisTk(WhoisEntry):
     """Whois parser for .tk domain"""
